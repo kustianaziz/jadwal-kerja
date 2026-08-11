@@ -25,5 +25,9 @@ class AppServiceProvider extends ServiceProvider
             'task' => \App\Models\Task::class,
             'journal' => \App\Models\JournalEntry::class,
         ]);
+
+        if (isset($_ENV['VERCEL']) || isset($_SERVER['VERCEL']) || env('APP_ENV') === 'production') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
     }
 }
