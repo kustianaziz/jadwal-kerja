@@ -1,0 +1,134 @@
+@import '@fontsource/inter';
+@import '@fontsource/roboto-slab';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-ice-blue text-dark-navy font-sans antialiased;
+    background-image: radial-gradient(theme('colors.steel-gray') 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-color: theme('colors.ice-blue');
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-semibold tracking-tight;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+  }
+}
+
+@layer components {
+  .skeuo-card {
+    @apply bg-white border border-steel-gray rounded-md shadow-skeuo-card overflow-hidden;
+    background: linear-gradient(to bottom, #ffffff 0%, #f9fafb 100%);
+  }
+
+  .skeuo-btn {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-dark-navy rounded-md font-display font-medium text-ice-blue bg-tech-blue shadow-skeuo-btn transition-all duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-cyan-glow focus:ring-offset-2 focus:ring-offset-ice-blue;
+    background: linear-gradient(to bottom, #3CAEF0 0%, #1B85BC 100%);
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
+  }
+
+  .skeuo-btn:active {
+    @apply shadow-skeuo-btn-pressed transform translate-y-[1px];
+    background: linear-gradient(to bottom, #1B85BC 0%, #3CAEF0 100%);
+  }
+
+  .skeuo-btn-secondary {
+    @apply skeuo-btn bg-steel-gray text-dark-navy border-steel-gray;
+    background: linear-gradient(to bottom, #D1D5DB 0%, #9CA3AF 100%);
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+  }
+
+  .skeuo-btn-secondary:active {
+    background: linear-gradient(to bottom, #9CA3AF 0%, #D1D5DB 100%);
+  }
+  
+  .skeuo-btn-success {
+    @apply skeuo-btn bg-gauge-green text-white border-gauge-green;
+    background: linear-gradient(to bottom, #4CAF50 0%, #2E7D32 100%);
+    text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
+  }
+
+  .skeuo-btn-success:active {
+    background: linear-gradient(to bottom, #2E7D32 0%, #4CAF50 100%);
+  }
+
+  .skeuo-input {
+    @apply block w-full px-3 py-2 border border-steel-gray rounded-md shadow-skeuo-input bg-white text-dark-navy focus:outline-none focus:ring-2 focus:ring-cyan-glow focus:border-cyan-glow sm:text-sm;
+  }
+
+  .skeuo-select {
+    @apply skeuo-input;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2328A8EA' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    appearance: none;
+  }
+
+  /* Stamps */
+  .stamp-base {
+    @apply inline-block px-3 py-1 font-display font-bold uppercase tracking-wider border-2 rounded-sm transform bg-transparent;
+    mask-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.2'/%3E%3C/svg%3E");
+    mask-size: 100px;
+    opacity: 0.9;
+  }
+
+  .stamp-healthy {
+    @apply stamp-base border-gauge-green text-gauge-green -rotate-2;
+  }
+  
+  .stamp-attention {
+    @apply stamp-base border-gauge-amber text-gauge-amber rotate-1;
+  }
+  
+  .stamp-at-risk {
+    @apply stamp-base border-gauge-orange text-gauge-orange -rotate-1;
+  }
+  
+  .stamp-critical {
+    @apply stamp-base border-gauge-red text-gauge-red rotate-2;
+  }
+
+  /* Progress Gauge */
+  .gauge-container {
+    @apply relative h-6 bg-gray-200 rounded-full border-2 border-steel-gray shadow-skeuo-input overflow-hidden;
+  }
+
+  .gauge-bar {
+    @apply h-full relative;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 100%);
+  }
+
+  .gauge-bar::after {
+    content: '';
+    @apply absolute top-0 left-0 right-0 h-1/2;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%);
+  }
+  
+  .gauge-ticks {
+    @apply absolute inset-0 w-full h-full;
+    background-image: linear-gradient(90deg, rgba(0,0,0,0.2) 1px, transparent 1px);
+    background-size: 10% 100%;
+  }
+
+  /* Folder Tab Nav */
+  .nav-tab {
+    @apply flex items-center px-4 py-3 text-sm font-display font-medium rounded-t-lg transition-colors border-t border-x border-transparent;
+  }
+
+  .nav-tab-active {
+    @apply bg-ice-blue text-tech-blue border-steel-gray shadow-[0_-2px_4px_rgba(0,0,0,0.05)];
+    border-bottom: 3px solid theme('colors.cyan-glow');
+  }
+
+  .nav-tab-inactive {
+    @apply text-ice-blue/80 hover:text-white hover:bg-black/10;
+  }
+}

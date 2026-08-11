@@ -1,0 +1,21 @@
+{
+  "name": "Jadwal Kerja App",
+  "short_name": "Jadwal",
+  "start_url": "/jadwal_kerja/public/",
+  "display": "standalone",
+  "background_color": "#F3ECDD",
+  "theme_color": "#232B3A",
+  "description": "Aplikasi Manajemen Proyek dan Jadwal Kerja",
+  "icons": [
+    {
+      "src": "images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
