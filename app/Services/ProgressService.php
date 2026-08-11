@@ -176,6 +176,7 @@ class ProgressService
         }
         $score += $blockedScore;
 
+        $score = (int) round($score);
         $project->health_score = $score;
         if ($score >= 80) $project->health_status = 'healthy';
         elseif ($score >= 60) $project->health_status = 'attention';
