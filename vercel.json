@@ -42,7 +42,7 @@
         "SESSION_FILES_PATH": "/tmp/storage/framework/sessions",
         "QUEUE_CONNECTION": "sync",
         "LOG_CHANNEL": "stderr",
-        "DB_PORT": "5432",
+        "DB_PORT": "6543",
         "DB_HOST": "aws-0-ap-northeast-1.pooler.supabase.com"
     }
 }
