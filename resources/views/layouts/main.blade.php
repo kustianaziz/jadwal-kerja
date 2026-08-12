@@ -27,6 +27,50 @@
                     .catch(err => console.log('Service Worker registration failed:', err));
             });
         }
+
+        // Custom PWA Install prompt handler
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            // Update UI to notify the user they can install the PWA
+            const installContainer = document.getElementById('pwa-install-container');
+            if (installContainer) {
+                installContainer.classList.remove('hidden');
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const installBtn = document.getElementById('pwa-install-btn');
+            if (installBtn) {
+                installBtn.addEventListener('click', async () => {
+                    if (!deferredPrompt) return;
+                    // Show the install prompt
+                    deferredPrompt.prompt();
+                    // Wait for the user to respond to the prompt
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`User response to the install prompt: ${outcome}`);
+                    // We've used the prompt, and can't use it again, discard it
+                    deferredPrompt = null;
+                    // Hide the install button
+                    const installContainer = document.getElementById('pwa-install-container');
+                    if (installContainer) {
+                        installContainer.classList.add('hidden');
+                    }
+                });
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            // Hide the install-prompts
+            const installContainer = document.getElementById('pwa-install-container');
+            if (installContainer) {
+                installContainer.classList.add('hidden');
+            }
+            console.log('Jadwal Kerja App was installed successfully!');
+        });
     </script>
 </head>
 <body class="font-sans antialiased bg-ice-blue text-dark-navy">
@@ -73,6 +117,14 @@
                     Tim
                 </a>
             </nav>
+
+            <!-- PWA Install Button (Kustom) -->
+            <div id="pwa-install-container" class="hidden px-4 py-2">
+                <button id="pwa-install-btn" class="w-full flex items-center justify-center py-2 px-3 text-xs bg-brass-gold hover:bg-brass-gold/90 text-dark-navy border border-brass-gold/70 shadow-skeuo-btn rounded-md font-display font-bold uppercase tracking-wider active:shadow-skeuo-btn-pressed active:translate-y-px transition-all">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    Instal Aplikasi
+                </button>
+            </div>
 
             <!-- User Profile (Bottom) -->
             <div class="p-4 border-t border-steel-gray bg-dark-navy/20">
