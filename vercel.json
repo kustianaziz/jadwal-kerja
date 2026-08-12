@@ -42,6 +42,7 @@
         "SESSION_FILES_PATH": "/tmp/storage/framework/sessions",
         "QUEUE_CONNECTION": "sync",
         "LOG_CHANNEL": "stderr",
-        "DB_PORT": "5432"
+        "DB_PORT": "5432",
+        "DB_HOST": "db.zytbgelpjsqwwbmywdok.supabase.co"
     }
 }
