@@ -37,7 +37,9 @@
         "APP_DEBUG": "true",
         "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
         "CACHE_STORE": "file",
+        "CACHE_DIR_PATH": "/tmp/storage/framework/cache/data",
         "SESSION_DRIVER": "file",
+        "SESSION_FILES_PATH": "/tmp/storage/framework/sessions",
         "QUEUE_CONNECTION": "sync",
         "LOG_CHANNEL": "stderr"
     }
