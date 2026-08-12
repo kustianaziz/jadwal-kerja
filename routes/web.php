@@ -10,14 +10,23 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    $projects = Project::with(['pm', 'phases.tasks.pics', 'phases.pic', 'pics'])->where('status', '!=', 'dibatalkan')->get();
+    $projects = Project::with(['pm'])->where('status', '!=', 'dibatalkan')->get();
     
     $totalAktif = $projects->where('status', 'berjalan')->count();
     $totalHealthy = $projects->where('health_status', 'healthy')->count();
     $healthScoreAverage = $projects->avg('health_score') ?? 0;
     
-    $groups = \App\Models\ProjectGroup::with(['projects.phases.tasks.pics', 'projects.phases.tasks.journals.author', 'projects.phases.tasks.journals.attachments', 'projects.phases.pic', 'projects.pm', 'projects.pics'])->get();
-    $ungroupedProjects = \App\Models\Project::with(['phases.tasks.pics', 'phases.tasks.journals.author', 'phases.tasks.journals.attachments', 'phases.pic', 'pm', 'pics'])->whereNull('group_id')->where('status', '!=', 'dibatalkan')->get();
+    // Optimize relationships: avoid loading journals and attachments for the summary tables
+    $groups = \App\Models\ProjectGroup::with([
+        'projects' => function($q) {
+            $q->where('status', '!=', 'dibatalkan')->with(['pm', 'phases.pic', 'phases.tasks.pics']);
+        }
+    ])->get();
+    
+    $ungroupedProjects = \App\Models\Project::with(['pm', 'phases.pic', 'phases.tasks.pics'])
+        ->whereNull('group_id')
+        ->where('status', '!=', 'dibatalkan')
+        ->get();
     
     $allPics = \App\Models\Pic::all();
 
