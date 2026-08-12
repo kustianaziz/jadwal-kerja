@@ -93,25 +93,83 @@ class TaskController extends Controller
     public function edit(Task $task)
     {
         $task->load('phase.project', 'pics');
-        return view('tasks.edit', compact('task'));
+        $pics = Pic::all();
+        $existingTasks = Task::where('phase_id', $task->phase_id)
+            ->whereNull('parent_task_id')
+            ->where('id', '!=', $task->id)
+            ->get();
+        $sisaBobot = 100 - $existingTasks->sum('bobot_pct');
+        return view('tasks.edit', compact('task', 'pics', 'sisaBobot'));
     }
 
     public function update(Request $request, Task $task)
     {
         $validated = $request->validate([
+            'nama_task' => 'required|string|max:200',
+            'bobot_pct' => 'required|numeric|min:0|max:100',
+            'prioritas' => 'required|in:low,medium,high',
+            'tanggal_mulai' => 'nullable|date',
+            'deadline' => 'nullable|date',
+            'deskripsi' => 'nullable|string',
+            'pic_utama' => 'nullable|exists:pics,id',
+            'kontributor' => 'nullable|array',
+            'kontributor.*' => 'exists:pics,id',
+            'lampiran.*' => 'nullable|file|max:10240',
             'progress_pct' => 'required|numeric|min:0|max:100',
             'status' => 'required|in:belum_mulai,in_progress,review,blocked,selesai',
         ]);
 
         $oldProgress = $task->progress_pct;
         $oldStatus = $task->status;
+        $oldBobot = $task->bobot_pct;
+        $oldNama = $task->nama_task;
+        $oldPrioritas = $task->prioritas;
         
         if ($validated['status'] === 'selesai') {
             $validated['progress_pct'] = 100;
             $validated['completed_at'] = now();
         }
 
-        $task->update($validated);
+        $task->update([
+            'nama_task' => $validated['nama_task'],
+            'bobot_pct' => $validated['bobot_pct'],
+            'prioritas' => $validated['prioritas'],
+            'tanggal_mulai' => $validated['tanggal_mulai'] ?? null,
+            'deadline' => $validated['deadline'] ?? null,
+            'deskripsi' => $validated['deskripsi'] ?? null,
+            'progress_pct' => $validated['progress_pct'],
+            'status' => $validated['status'],
+        ]);
+
+        // Sync PIC Utama and Contributors
+        $syncData = [];
+        if (!empty($validated['pic_utama'])) {
+            $syncData[$validated['pic_utama']] = ['peran' => 'utama'];
+        }
+        if (!empty($validated['kontributor'])) {
+            foreach ($validated['kontributor'] as $kontribId) {
+                if ($kontribId != ($validated['pic_utama'] ?? null)) {
+                    $syncData[$kontribId] = ['peran' => 'kontributor'];
+                }
+            }
+        }
+        $task->pics()->sync($syncData);
+
+        // Handle file uploads
+        if ($request->hasFile('lampiran')) {
+            foreach ($request->file('lampiran') as $file) {
+                $path = $file->store('attachments/tasks', 'public');
+                Attachment::create([
+                    'attachable_type' => 'task',
+                    'attachable_id' => $task->id,
+                    'nama_file' => $file->getClientOriginalName(),
+                    'path_file' => $path,
+                    'ukuran_bytes' => $file->getSize(),
+                    'mime_type' => $file->getMimeType(),
+                    'uploaded_by' => auth()->id(),
+                ]);
+            }
+        }
 
         // Auto-log progress change
         JournalEntry::create([
@@ -119,8 +177,8 @@ class TaskController extends Controller
             'phase_id' => $task->phase_id,
             'task_id' => $task->id,
             'tipe' => 'system',
-            'judul' => 'Progress diperbarui: ' . $task->nama_task,
-            'detail' => '<p>Progress <strong>' . $task->nama_task . '</strong> berubah dari ' . $oldProgress . '% menjadi ' . $validated['progress_pct'] . '%. Status: ' . str_replace('_', ' ', $validated['status']) . '.</p>',
+            'judul' => 'Task diperbarui: ' . $task->nama_task,
+            'detail' => '<p>Task <strong>' . $task->nama_task . '</strong> berhasil diperbarui. Progress: ' . $validated['progress_pct'] . '%. Status: ' . str_replace('_', ' ', $validated['status']) . '.</p>',
             'created_by' => auth()->id(),
         ]);
 
@@ -132,10 +190,14 @@ class TaskController extends Controller
         if ($oldStatus != $validated['status']) {
             $progressService->createAutoLog('task', $task->id, 'status', $oldStatus, $validated['status'], auth()->id());
         }
+        if ($oldBobot != $validated['bobot_pct']) {
+            $progressService->createAutoLog('task', $task->id, 'bobot_pct', $oldBobot, $validated['bobot_pct'], auth()->id());
+        }
 
         $progressService->updateTaskProgress($task);
+        $progressService->validateBobotSeimbang($task->phase->project);
 
-        return redirect()->route('projects.show', $task->phase->project_id)->with('success', 'Progress berhasil diperbarui!');
+        return redirect()->route('projects.show', $task->phase->project_id)->with('success', 'Task berhasil diperbarui!');
     }
 
     public function destroy(Task $task)
