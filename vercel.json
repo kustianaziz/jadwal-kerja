@@ -28,8 +28,8 @@
         "APP_ENV": "production",
         "APP_DEBUG": "true",
         "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
-        "CACHE_STORE": "array",
-        "SESSION_DRIVER": "cookie",
+        "CACHE_STORE": "file",
+        "SESSION_DRIVER": "file",
         "QUEUE_CONNECTION": "sync",
         "LOG_CHANNEL": "stderr"
     }
