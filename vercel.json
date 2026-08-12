@@ -41,6 +41,7 @@
         "SESSION_DRIVER": "cookie",
         "SESSION_FILES_PATH": "/tmp/storage/framework/sessions",
         "QUEUE_CONNECTION": "sync",
-        "LOG_CHANNEL": "stderr"
+        "LOG_CHANNEL": "stderr",
+        "DB_PORT": "5432"
     }
 }
