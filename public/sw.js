@@ -1,8 +1,8 @@
 const CACHE_NAME = 'jadwal-kerja-v1';
 const urlsToCache = [
-    '/jadwal_kerja/public/',
-    '/jadwal_kerja/public/manifest.json',
-    '/jadwal_kerja/public/images/logo.png',
+    '/',
+    '/manifest.json',
+    '/images/logo.png',
 ];
 
 self.addEventListener('install', event => {

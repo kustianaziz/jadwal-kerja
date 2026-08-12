@@ -8,8 +8,23 @@
     <title>{{ config('app.name', 'Jadwal Kerja') }}</title>
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
 
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#232B3A">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Service Worker registered successfully!', reg.scope))
+                    .catch(err => console.log('Service Worker registration failed:', err));
+            });
+        }
+    </script>
 </head>
 <body class="font-sans antialiased bg-ice-blue text-dark-navy relative overflow-hidden min-h-screen flex items-center justify-center p-4">
     
