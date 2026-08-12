@@ -47,6 +47,7 @@
     <td colspan="6" class="p-0">
         <form action="{{ route('phases.store', $project->id) }}" method="POST" class="p-4 border-l-4 border-tech-blue ml-4 bg-white shadow-inner flex flex-col gap-3">
             @csrf
+            <input type="hidden" name="redirect_to" value="dashboard">
             <input type="text" name="nama_fase" placeholder="Nama Fase Baru..." required class="skeuo-input py-1.5 px-3 text-sm w-full font-bold text-dark-navy">
             
             <div class="flex flex-wrap gap-3 items-center">
@@ -129,6 +130,7 @@
         <td colspan="6" class="p-0">
             <form action="{{ route('phases.copy', $phase->id) }}" method="POST" class="p-4 border-l-4 border-gauge-amber ml-10 bg-white shadow-inner flex flex-col gap-3">
                 @csrf
+                <input type="hidden" name="redirect_to" value="dashboard">
                 <div class="flex items-center text-sm font-bold text-dark-navy">
                     <svg class="w-4 h-4 mr-2 text-gauge-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                     Salin Fase: <span class="ml-2 text-tech-blue">{{ $phase->nama_fase }}</span>
@@ -162,6 +164,7 @@
         <td colspan="6" class="p-0">
             <form action="{{ route('tasks.store', $phase->id) }}" method="POST" class="p-4 border-l-4 border-cyan-glow ml-10 bg-white shadow-inner flex flex-col gap-3">
                 @csrf
+                <input type="hidden" name="redirect_to" value="dashboard">
                 <input type="text" name="nama_task" placeholder="Nama Task Baru..." required class="skeuo-input py-1.5 px-3 text-sm w-full font-bold text-dark-navy">
                 
                 <div class="flex flex-wrap gap-3 items-center">

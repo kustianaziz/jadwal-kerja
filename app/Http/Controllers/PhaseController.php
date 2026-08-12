@@ -47,6 +47,15 @@ class PhaseController extends Controller
         $progressService->updateProjectProgress($project);
         $progressService->validateBobotSeimbang($project);
 
+        if ($request->has('redirect_to') && $request->input('redirect_to') === 'dashboard') {
+            return redirect()->route('dashboard')->with([
+                'success' => 'Fase berhasil ditambahkan!',
+                'expanded_group' => $project->group_id ?? 'ungrouped',
+                'expanded_project' => $project->id,
+                'expanded_phase' => $phase->id
+            ]);
+        }
+
         return redirect()->route('projects.show', $project)->with('success', 'Fase berhasil ditambahkan!');
     }
 

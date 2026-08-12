@@ -87,6 +87,15 @@ class TaskController extends Controller
         $progressService->updatePhaseProgress($phase);
         $progressService->validateBobotSeimbang($phase->project);
 
+        if ($request->has('redirect_to') && $request->input('redirect_to') === 'dashboard') {
+            return redirect()->route('dashboard')->with([
+                'success' => 'Task berhasil ditambahkan!',
+                'expanded_group' => $phase->project->group_id ?? 'ungrouped',
+                'expanded_project' => $phase->project_id,
+                'expanded_phase' => $phase->id
+            ]);
+        }
+
         return redirect()->route('projects.show', $phase->project_id)->with('success', 'Task berhasil ditambahkan!');
     }
 
